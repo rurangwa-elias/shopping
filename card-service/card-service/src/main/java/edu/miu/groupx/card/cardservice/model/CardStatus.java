@@ -1,2 +1,7 @@
-package edu.miu.groupx.card.cardservice.model;public enum CardSatus {
+package edu.miu.groupx.card.cardservice.model;
+
+public enum CardStatus {
+    INVALID,
+    VALID,
+    EXPIRED
 }

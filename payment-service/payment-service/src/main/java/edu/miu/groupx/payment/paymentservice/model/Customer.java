@@ -1,2 +1,4 @@
-package edu.miu.groupx.payment.paymentservice.model;public class Customer {
+package edu.miu.groupx.payment.paymentservice.model;
+
+public class Customer {
 }
