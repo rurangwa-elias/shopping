@@ -23,7 +23,7 @@ public class Product implements Serializable{
 	private Long id;
 	@Version
 	private Integer version;
-	@NotNull
+	@Column(unique=true)
 	private String name;
 	@NotNull
 	private String description;

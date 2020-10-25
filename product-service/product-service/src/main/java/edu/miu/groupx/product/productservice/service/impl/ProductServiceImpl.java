@@ -110,9 +110,9 @@ public class ProductServiceImpl implements ProductService {
 		
 	}
 
-	/*
-	 * @Override public List<Product> search(String keyword) {
-	 * 
-	 * return productRepository.searchProducts(keyword); }
-	 */
+	
+	  @Override public List<Product> search(String keyword) {
+	  
+	  return productRepository.searchProducts(keyword); }
+	 
 }
