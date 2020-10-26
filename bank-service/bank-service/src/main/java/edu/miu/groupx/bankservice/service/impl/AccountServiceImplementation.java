@@ -1,8 +1,10 @@
 package edu.miu.groupx.bankservice.service.impl;
 
 import edu.miu.groupx.bankservice.exeception.AccountException;
+import edu.miu.groupx.bankservice.model.AccountEntries;
 import edu.miu.groupx.bankservice.model.Card;
 import edu.miu.groupx.bankservice.model.CheckingAccount;
+import edu.miu.groupx.bankservice.model.TransactionType;
 import edu.miu.groupx.bankservice.repository.CheckingAccountRepository;
 import edu.miu.groupx.bankservice.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
 
@@ -41,13 +44,30 @@ public class AccountServiceImplementation implements AccountService {
         //set the details of the card individually. this is important for the fact that the card id will not be set to the one gotten from the remote
         CheckingAccount newCheckingAccount = new CheckingAccount();
         newCheckingAccount.setAccountNumber(this.generateAccountNumber());
-        Card newMasterCard = new Card();
-        newMasterCard.setHolderName(newCard.getBody().getHolderName());
-        newMasterCard.setCardNumber(newCard.getBody().getCardNumber());
-        newMasterCard.setCCV(newCard.getBody().getCCV());
-        newMasterCard.setExpirationDate(newCard.getBody().getExpirationDate());
-        newMasterCard.setStatus(newCard.getBody().getStatus());
-        newCheckingAccount.setCard(newMasterCard);
+
+        if(cardType.equals("master-card")){
+            Card newMasterCard = new Card();
+            newMasterCard.setHolderName(newCard.getBody().getHolderName());
+            newMasterCard.setCardNumber(newCard.getBody().getCardNumber());
+            newMasterCard.setCCV(newCard.getBody().getCCV());
+            newMasterCard.setExpirationDate(newCard.getBody().getExpirationDate());
+            newMasterCard.setStatus(newCard.getBody().getStatus());
+            newCheckingAccount.setCard(newMasterCard);
+
+        }else{
+            Card newVisaCard = new Card();
+            newVisaCard.setHolderName(newCard.getBody().getHolderName());
+            newVisaCard.setCardNumber(newCard.getBody().getCardNumber());
+            newVisaCard.setCCV(newCard.getBody().getCCV());
+            newVisaCard.setExpirationDate(newCard.getBody().getExpirationDate());
+            newVisaCard.setStatus(newCard.getBody().getStatus());
+            newCheckingAccount.setCard(newVisaCard);
+        }
+
+
+
+
+
         return checkingAccountRepository.save(newCheckingAccount);
     }
 
@@ -80,7 +100,7 @@ public class AccountServiceImplementation implements AccountService {
         CheckingAccount account = checkingAccountRepository.findCheckingAccountByCardCardNumber(accountNumber);
         account.setBalance(account.getBalance().add(amount));
         checkingAccountRepository.save(account);
-        return account.getBalance();
+        return checkingAccountRepository.save(account).getBalance();
     }
 
     @Override
@@ -109,6 +129,40 @@ public class AccountServiceImplementation implements AccountService {
         return (difference.compareTo(BigDecimal.ZERO) != -1);
     }
 
+
+    private Boolean transferFund(String sourceAccountNumber, String destinationAccountNumber, BigDecimal amount) {
+        Boolean transferStatus = false;
+        if (hasEnoughBalance(amount, sourceAccountNumber)) {
+            withdraw(amount, sourceAccountNumber);
+            deposit(amount, destinationAccountNumber);
+            CheckingAccount sourceAccount = checkingAccountRepository.findCheckingAccountByAccountNumber(sourceAccountNumber);
+            CheckingAccount destinationAccount = checkingAccountRepository.findCheckingAccountByAccountNumber(destinationAccountNumber);
+            LocalDate transactionDate = LocalDate.now();
+
+            AccountEntries sourceEntry = new AccountEntries();
+            sourceEntry.setTransactionDate(transactionDate);
+            sourceEntry.setAmount(amount);
+            sourceEntry.setSubjectAccountNumber(destinationAccountNumber);
+            sourceEntry.setTransactionType(TransactionType.WITHDRAWAL);
+            sourceAccount.getAccountEntries().add(sourceEntry);
+
+            AccountEntries destinationEntry = new AccountEntries();
+            destinationEntry.setTransactionDate(transactionDate);
+            destinationEntry.setAmount(amount);
+            destinationEntry.setSubjectAccountNumber(sourceAccountNumber);
+            destinationEntry.setTransactionType(TransactionType.DEPOSIT);
+            destinationAccount.getAccountEntries().add(destinationEntry);
+            transferStatus = true;
+
+        }
+        return transferStatus;
+    }
+
+    @Override
+    public Boolean makePayment(String sourceAccount, String destinationAccount, BigDecimal amount) {
+        return this.transferFund(sourceAccount, destinationAccount, amount);
+    }
+
     /**
      * Account Utility methods
      */
@@ -121,18 +175,6 @@ public class AccountServiceImplementation implements AccountService {
         }
         return stringBuilder.toString();
     }
-    /**
-     * API caller
-     */
-//    private <T> T postApiCaller(String url){
-//        HttpHeaders headers = new HttpHeaders();
-//        Object type = null;
-//        Class<T extends ? > className = type.getClass();
-//        //set headers and tokens here
-//       HttpEntity<String> cardHttpEntity = new HttpEntity<>(cardType, headers);
-//        ResponseEntity<T> result = restTemplate.postForEntity(url, type.getClass());
-//
-//
-//    }
+
 
 }
