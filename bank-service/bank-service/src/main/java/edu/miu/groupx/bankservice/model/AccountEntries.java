@@ -14,6 +14,7 @@ public class AccountEntries {
     private Long id;
     private LocalDate transactionDate;
     private BigDecimal amount;
+    private String subjectAccountNumber;
     private TransactionType transactionType;
 
 }

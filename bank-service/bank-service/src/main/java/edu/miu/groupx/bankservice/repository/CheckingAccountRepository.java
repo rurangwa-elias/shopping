@@ -8,4 +8,5 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Repository
 public interface CheckingAccountRepository extends JpaRepository<CheckingAccount, Long> {
     public CheckingAccount findCheckingAccountByCardCardNumber(String cardNumber);
+    public CheckingAccount findCheckingAccountByAccountNumber(String accountNumber);
 }

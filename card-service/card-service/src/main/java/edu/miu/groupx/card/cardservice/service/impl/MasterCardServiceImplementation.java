@@ -48,7 +48,6 @@ public class MasterCardServiceImplementation implements MasterCardService {
         newCard.setExpirationDate(cardUtilService.generateExpirationDate());
         newCard.setCCV(cardUtilService.generateCCV());
         newCard.setStatus(CardStatus.VALID);
-
         return masterCardRepository.save(newCard);
     }
 

@@ -8,7 +8,8 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
- @Service
+
+@Service
 public interface AccountService {
     public CheckingAccount createCheckingAccount(String holderName, String cardType);
 
@@ -28,5 +29,5 @@ public interface AccountService {
 
     public boolean hasEnoughBalance(BigDecimal amount, String accountNumber);
 
-
+    public Boolean makePayment(String sourceAccount, String destinationAccount, BigDecimal amount);
 }
