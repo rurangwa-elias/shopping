@@ -1,13 +1,17 @@
 package edu.miu.groupx.card.cardservice.service.impl;
 
 import edu.miu.groupx.card.cardservice.exception.CardException;
+import edu.miu.groupx.card.cardservice.model.CardStatus;
+import edu.miu.groupx.card.cardservice.model.CardType;
 import edu.miu.groupx.card.cardservice.model.MasterCard;
 import edu.miu.groupx.card.cardservice.repository.MasterCardRepository;
+import edu.miu.groupx.card.cardservice.service.CardUtilService;
 import edu.miu.groupx.card.cardservice.service.MasterCardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.util.List;
 
 @Transactional
@@ -15,13 +19,14 @@ import java.util.List;
 public class MasterCardServiceImplementation implements MasterCardService {
     @Autowired
     private MasterCardRepository masterCardRepository;
+    @Autowired
+    private CardUtilService cardUtilService;
 
 
     @Override
     public MasterCard findCardById(Long id) {
 
-        return masterCardRepository.findById(id).orElseThrow(() ->
-                new CardException("Card not found"));
+        return masterCardRepository.findById(id).orElseThrow(() -> new CardException("Card not found"));
     }
 
     @Override
@@ -32,9 +37,19 @@ public class MasterCardServiceImplementation implements MasterCardService {
     }
 
     @Override
-    public MasterCard addCard(MasterCard card) {
+    public MasterCard createNewCardForCustomer(String cardHolderName) {
+        //generate new master-card number;
+        Integer firstDigit = CardType.MASTER_CARD_START_NUMBER.getValue();
+        Integer cardLength = CardType.MASTER_CARD_LENGTH.getValue();
+        MasterCard newCard = new MasterCard();
+        String cardNumber = cardUtilService.generateCreditCardNumber(firstDigit + "", cardLength);
+        newCard.setHolderName(cardHolderName);
+        newCard.setCardNumber(cardNumber);
+        newCard.setExpirationDate(cardUtilService.generateExpirationDate());
+        newCard.setCCV(cardUtilService.generateCCV());
+        newCard.setStatus(CardStatus.VALID);
 
-        return masterCardRepository.save(card);
+        return masterCardRepository.save(newCard);
     }
 
     @Override
@@ -46,7 +61,7 @@ public class MasterCardServiceImplementation implements MasterCardService {
     @Override
     public String getMasterCardStatus(String cardNumber, String CCV) {
         MasterCard card = masterCardRepository.findMasterCardByCardNumberAndCCV(cardNumber, CCV);
-        String STATUS ="INVALID";
+        String STATUS = "INVALID";
         return STATUS;
     }
 

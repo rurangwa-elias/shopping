@@ -1,9 +1,12 @@
 package edu.miu.groupx.card.cardservice.service.impl;
 
 import edu.miu.groupx.card.cardservice.service.CardUtilService;
+import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Random;
 
+@Service
 public class CardUtilServiceImplementation implements CardUtilService {
     /**
      * @param bin    is the bank identifier number or the issuer number the first one or two digits
@@ -15,19 +18,12 @@ public class CardUtilServiceImplementation implements CardUtilService {
     @Override
     public String generateCreditCardNumber(String bin, int length) {
 
-        Random random = new Random(System.currentTimeMillis());
-
         int randomCardNumberLength = length - (bin.length()) - 1;
         StringBuilder builder = new StringBuilder(bin);
-        for (int i = 0; i < randomCardNumberLength; i++) {
-            /**
-             * get a random int value between 0 inclusive and 10 (exclusive)
-             */
-            int cardDigit = random.nextInt(10);
-            builder.append(cardDigit);
-        }
+        builder.append(this.generateRandomNumber(randomCardNumberLength));
         /**
-         * Now we run Luhn algorithm to generate the  check digits
+         * Now we run Luhn algorithm to generate the  check digits. the checkDigit(String num) runs Luhn algorithm to generate the
+         * check digit
          */
         int checkDigit = this.checkDigit(builder.toString());
         builder.append(checkDigit);
@@ -87,5 +83,34 @@ public class CardUtilServiceImplementation implements CardUtilService {
         }
         return (10 - (sum % 10));
 
+    }
+
+    @Override
+    public String generateCCV() {
+        return this.generateRandomNumber(3);
+    }
+
+    private String generateRandomNumber(Integer length) {
+        Random random = new Random(System.currentTimeMillis());
+        StringBuilder builder = new StringBuilder("");
+        for (int i = 0; i < length; i++) {
+            int digit = random.nextInt(10);
+            builder.append(digit);
+        }
+
+        return builder.toString();
+    }
+
+    @Override
+    public String generateExpirationDate() {
+        LocalDate expirationDate = LocalDate.now().plusYears(5);
+        Integer month = expirationDate.getMonthValue();
+        String year = "" + expirationDate.getYear();
+        StringBuilder stringBuilder = new StringBuilder("");
+        if (month < 10) {
+            stringBuilder.append(0).append(month);
+        }
+        stringBuilder.append(month).append("/").append(year.substring(2, year.length()));
+        return stringBuilder.toString();
     }
 }

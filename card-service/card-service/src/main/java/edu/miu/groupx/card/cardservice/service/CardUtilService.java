@@ -8,6 +8,8 @@ public interface CardUtilService {
     public String generateCreditCardNumber(String bin, int length);
     public boolean isValidCard(String cardNumber);
     public int checkDigit(String number);
+    public String generateExpirationDate();
+    public String generateCCV();
 
 
 
