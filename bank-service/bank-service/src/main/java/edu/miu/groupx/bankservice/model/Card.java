@@ -1,15 +1,16 @@
-package edu.miu.groupx.card.cardservice.model;
+package edu.miu.groupx.bankservice.model;
 
-
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Data
 @Entity
-public class MasterCard {
+public class Card {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -18,5 +19,6 @@ public class MasterCard {
     private String CCV;
     private String expirationDate;
     private CardStatus status;
+
 
 }
