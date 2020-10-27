@@ -1,6 +1,7 @@
 package edu.miu.groupx.bankservice.controller;
 
 
+import edu.miu.groupx.bankservice.model.CheckingAccount;
 import edu.miu.groupx.bankservice.model.Customer;
 import edu.miu.groupx.bankservice.model.wrappermodel.Payment;
 import edu.miu.groupx.bankservice.model.wrappermodel.User;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Controller
@@ -35,16 +37,10 @@ public class BankServiceController {
 
     @PostMapping("/users/{cardType}")
     public ResponseEntity<Customer> createNewCustomer(@RequestBody User newUser, @PathVariable String cardType) {
-        Customer newCustomer = new Customer();
-        newCustomer.setFirstName(newUser.getFirstName());
-        newCustomer.setLastName(newUser.getLastName());
-        newCustomer.setDob_date(newUser.getDob_date());
-        newCustomer.setDob_month(newUser.getDob_month());
-        newCustomer.setDob_year(newUser.getDob_year());
-        newCustomer.setSSN(newUser.getSSN());
 
-        return new ResponseEntity<>(customerService.createNewCustomer(newCustomer, cardType), HttpStatus.CREATED);
+        return new ResponseEntity<>(customerService.createNewCustomer(newUser, cardType), HttpStatus.CREATED);
     }
+
     @PutMapping("/users")
     public ResponseEntity<Customer> updateCustomer(@RequestBody Customer updatedCustomer) {
         return new ResponseEntity<>(customerService.updateCustomerDetail(updatedCustomer), HttpStatus.CREATED);
@@ -63,8 +59,19 @@ public class BankServiceController {
         return new ResponseEntity<Boolean>(accountService.makePayment(
                 payment.getSourceAccountNumber(),
                 payment.getDestinationAccountNumber(),
-                payment.getAmount()),HttpStatus.CREATED
-                );
+                payment.getAmount()), HttpStatus.CREATED
+        );
     }
 
+    @PostMapping("/deposit/{amount}")
+    public ResponseEntity<CheckingAccount> deposit(@RequestBody String accountNumber, @PathVariable BigDecimal amount) {
+
+        return new ResponseEntity<CheckingAccount>(accountService.deposit(amount, accountNumber), HttpStatus.CREATED);
+
+    }
+
+    @PostMapping("/withdraw/{amount}")
+    public ResponseEntity<CheckingAccount> withdraw(@RequestBody String accountNumber, @PathVariable BigDecimal amount) {
+        return new ResponseEntity<>(accountService.withdraw(amount, accountNumber), HttpStatus.CREATED);
+    }
 }
