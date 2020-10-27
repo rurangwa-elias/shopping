@@ -45,7 +45,7 @@ public class AccountServiceImplementation implements AccountService {
         CheckingAccount newCheckingAccount = new CheckingAccount();
         newCheckingAccount.setAccountNumber(this.generateAccountNumber());
 
-        if(cardType.equals("master-card")){
+        if (cardType.equals("master-card")) {
             Card newMasterCard = new Card();
             newMasterCard.setHolderName(newCard.getBody().getHolderName());
             newMasterCard.setCardNumber(newCard.getBody().getCardNumber());
@@ -54,7 +54,7 @@ public class AccountServiceImplementation implements AccountService {
             newMasterCard.setStatus(newCard.getBody().getStatus());
             newCheckingAccount.setCard(newMasterCard);
 
-        }else{
+        } else {
             Card newVisaCard = new Card();
             newVisaCard.setHolderName(newCard.getBody().getHolderName());
             newVisaCard.setCardNumber(newCard.getBody().getCardNumber());
@@ -65,10 +65,7 @@ public class AccountServiceImplementation implements AccountService {
         }
 
 
-
-
-
-        return checkingAccountRepository.save(newCheckingAccount);
+        return newCheckingAccount;
     }
 
     @Override
@@ -85,7 +82,7 @@ public class AccountServiceImplementation implements AccountService {
     }
 
     @Override
-    public CheckingAccount getCheckingAccountById(Long id) {
+    public CheckingAccount findCheckingAccountById(Long id) {
         return checkingAccountRepository.findById(id).orElseThrow(() -> new AccountException("Could not find account"));
     }
 
@@ -96,34 +93,45 @@ public class AccountServiceImplementation implements AccountService {
     }
 
     @Override
-    public BigDecimal deposit(BigDecimal amount, String accountNumber) {
-        CheckingAccount account = checkingAccountRepository.findCheckingAccountByCardCardNumber(accountNumber);
+    public CheckingAccount deposit(BigDecimal amount, String accountNumber) {
+        CheckingAccount account = this.findAccountByAccountNumber(accountNumber);
         account.setBalance(account.getBalance().add(amount));
+        AccountEntries accountEntry = new AccountEntries();
+        accountEntry.setTransactionDate(LocalDate.now());
+        accountEntry.setAmount(amount);
+        accountEntry.setSubjectAccountNumber(accountNumber);
+        accountEntry.setTransactionType(TransactionType.DEPOSIT);
+        account.getAccountEntries().add(accountEntry);
         checkingAccountRepository.save(account);
-        return checkingAccountRepository.save(account).getBalance();
+        return checkingAccountRepository.save(account);
     }
 
     @Override
-    public BigDecimal withdraw(BigDecimal amount, String accountNumber) {
-        CheckingAccount account = checkingAccountRepository.findCheckingAccountByCardCardNumber(accountNumber);
-        BigDecimal currentBalance = account.getBalance();
-        BigDecimal difference = currentBalance.subtract(amount);
+    public CheckingAccount withdraw(BigDecimal amount, String accountNumber) {
+
+        CheckingAccount account = this.findAccountByAccountNumber(accountNumber);
         if (this.hasEnoughBalance(amount, accountNumber)) {
-            currentBalance.subtract(amount);
-            account.setBalance(currentBalance);
+            account.setBalance(account.getBalance().subtract(amount));
+            AccountEntries accountEntry = new AccountEntries();
+            accountEntry.setTransactionDate(LocalDate.now());
+            accountEntry.setAmount(amount);
+            accountEntry.setSubjectAccountNumber(accountNumber);
+            accountEntry.setTransactionType(TransactionType.WITHDRAWAL);
+            account.getAccountEntries().add(accountEntry);
             checkingAccountRepository.save(account);
         }
-        return account.getBalance();
+        return account;
     }
 
     @Override
-    public CheckingAccount findAccountByCardNumber(String accountNumber) {
-        return checkingAccountRepository.findCheckingAccountByCardCardNumber(accountNumber);
+    public CheckingAccount findAccountByAccountNumber(String accountNumber) {
+
+        return checkingAccountRepository.findCheckingAccountByAccountNumber(accountNumber);
     }
 
     @Override
     public boolean hasEnoughBalance(BigDecimal amount, String accountNumber) {
-        CheckingAccount account = checkingAccountRepository.findCheckingAccountByCardCardNumber(accountNumber);
+        CheckingAccount account = this.findAccountByAccountNumber(accountNumber);
         BigDecimal currentBalance = account.getBalance();
         BigDecimal difference = currentBalance.subtract(amount);
         return (difference.compareTo(BigDecimal.ZERO) != -1);
@@ -133,10 +141,12 @@ public class AccountServiceImplementation implements AccountService {
     private Boolean transferFund(String sourceAccountNumber, String destinationAccountNumber, BigDecimal amount) {
         Boolean transferStatus = false;
         if (hasEnoughBalance(amount, sourceAccountNumber)) {
-            withdraw(amount, sourceAccountNumber);
-            deposit(amount, destinationAccountNumber);
-            CheckingAccount sourceAccount = checkingAccountRepository.findCheckingAccountByAccountNumber(sourceAccountNumber);
-            CheckingAccount destinationAccount = checkingAccountRepository.findCheckingAccountByAccountNumber(destinationAccountNumber);
+//            withdraw(amount, sourceAccountNumber);
+//            deposit(amount, destinationAccountNumber);
+            CheckingAccount sourceAccount = this.findAccountByAccountNumber(sourceAccountNumber);
+            sourceAccount.setBalance(sourceAccount.getBalance().subtract(amount));
+            CheckingAccount destinationAccount = this.findAccountByAccountNumber(destinationAccountNumber);
+            destinationAccount.setBalance(destinationAccount.getBalance().add(amount));
             LocalDate transactionDate = LocalDate.now();
 
             AccountEntries sourceEntry = new AccountEntries();
@@ -145,6 +155,7 @@ public class AccountServiceImplementation implements AccountService {
             sourceEntry.setSubjectAccountNumber(destinationAccountNumber);
             sourceEntry.setTransactionType(TransactionType.WITHDRAWAL);
             sourceAccount.getAccountEntries().add(sourceEntry);
+            checkingAccountRepository.save(sourceAccount);
 
             AccountEntries destinationEntry = new AccountEntries();
             destinationEntry.setTransactionDate(transactionDate);
@@ -152,6 +163,7 @@ public class AccountServiceImplementation implements AccountService {
             destinationEntry.setSubjectAccountNumber(sourceAccountNumber);
             destinationEntry.setTransactionType(TransactionType.DEPOSIT);
             destinationAccount.getAccountEntries().add(destinationEntry);
+            checkingAccountRepository.save(destinationAccount);
             transferStatus = true;
 
         }

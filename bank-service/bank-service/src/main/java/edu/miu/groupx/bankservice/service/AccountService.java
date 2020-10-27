@@ -17,15 +17,15 @@ public interface AccountService {
 
     public void deleteCheckingAccount(CheckingAccount account);
 
-    public CheckingAccount getCheckingAccountById(Long id);
+    public CheckingAccount findCheckingAccountById(Long id);
 
     public List<CheckingAccount> getAllCheckingAccount();
 
-    public BigDecimal deposit(BigDecimal amount, String accountNumber);
+    public CheckingAccount deposit(BigDecimal amount, String accountNumber);
 
-    public BigDecimal withdraw(BigDecimal amount, String accountNumber);
+    public CheckingAccount withdraw(BigDecimal amount, String accountNumber);
 
-    public CheckingAccount findAccountByCardNumber(String accountNumber);
+    public CheckingAccount findAccountByAccountNumber(String accountNumber);
 
     public boolean hasEnoughBalance(BigDecimal amount, String accountNumber);
 
