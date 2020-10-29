@@ -1,4 +1,4 @@
-package edu.miu.groupx.card.cardservice.model;
+package edu.miu.groupx.payment.paymentservice.model.enums;
 
 public enum CardStatus {
     INVALID("INVALID"),
