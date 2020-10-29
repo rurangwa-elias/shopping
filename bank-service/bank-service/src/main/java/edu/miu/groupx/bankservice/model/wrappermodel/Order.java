@@ -1,5 +1,6 @@
-package edu.miu.groupx.payment.paymentservice.model;
+package edu.miu.groupx.bankservice.model.wrappermodel;
 
+import edu.miu.groupx.bankservice.model.Card;
 import lombok.Data;
 
 import java.math.BigDecimal;
