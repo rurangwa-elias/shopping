@@ -13,43 +13,43 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import edu.miu.groupx.product.productservice.models.ProductCatagory;
-import edu.miu.groupx.product.productservice.service.ProductCatagoryService;
+import edu.miu.groupx.product.productservice.models.Category;
+import edu.miu.groupx.product.productservice.service.CategoryService;
 
 @RestController
 @RequestMapping("/api")
-public class ProductCatagoryController {
+public class CategoryController {
 
 	@Autowired
-	ProductCatagoryService productCatagoryService;
+	CategoryService categoryService;
 
 	@GetMapping("/productCategories")
-	public List<ProductCatagory> getCategories() {
+	public List<Category> getCategories() {
 
-		return productCatagoryService.getAll();
+		return categoryService.getAll();
 	}
 
 	@PostMapping("productCategory/save")
-	public ProductCatagory addCategory(@RequestBody ProductCatagory productCatagory) {
+	public Category addCategory(@RequestBody Category category) {
 
-		return productCatagoryService.save(productCatagory);
+		return categoryService.save(category);
 	}
 
 	@GetMapping("productCategories/{id}")
-	ProductCatagory getCategory(@PathVariable Long id) {
-		return productCatagoryService.getById(id);
+	Category getCategory(@PathVariable Long id) {
+		return categoryService.getById(id);
 	}
 
 	
 	  @PutMapping("productCategories/{id}")
-	 public  ProductCatagory ProductCatagory(@RequestBody ProductCatagory newCategry, @PathVariable Long id) {
+	 public  Category Category(@RequestBody Category newCategry, @PathVariable Long id) {
 	  
-	  return productCatagoryService.productCatagoryUpdate(id, newCategry); }
+	  return categoryService.productCatagoryUpdate(id, newCategry); }
 	 
 
 	@DeleteMapping("productCategories/{id}")
 	void deleteCategory(@PathVariable Long id) {
-		productCatagoryService.deleteById(id);
+		categoryService.deleteById(id);
 		
 	}
 
