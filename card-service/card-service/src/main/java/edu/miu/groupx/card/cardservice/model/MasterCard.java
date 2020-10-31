@@ -16,15 +16,7 @@ public class MasterCard {
     private String holderName;
     private String cardNumber;
     private String CCV;
-    private String expirationMonth;
-    private String expirationYear;
+    private String expirationDate;
     private CardStatus status;
 
-    public MasterCard(String holderName, String cardNumber, String CCV, String expirationMonth, String expirationYear) {
-        this.holderName = holderName;
-        this.cardNumber = cardNumber;
-        this.CCV = CCV;
-        this.expirationMonth = expirationMonth;
-        this.expirationYear = expirationYear;
-    }
 }

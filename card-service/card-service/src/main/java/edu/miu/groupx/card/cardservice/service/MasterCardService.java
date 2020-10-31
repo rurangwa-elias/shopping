@@ -12,7 +12,7 @@ public interface MasterCardService {
 
     public void deleteCard(MasterCard card);
 
-    public MasterCard addCard(MasterCard card);
+    public MasterCard createNewCardForCustomer(String cardHolderName);
 
     public List<MasterCard> findAllCards();
 
