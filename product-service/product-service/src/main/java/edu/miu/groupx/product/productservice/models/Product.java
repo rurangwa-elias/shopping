@@ -52,7 +52,7 @@ public class Product implements Serializable {
 	
 		
 	public Product() {
-		
+
 	}
 	public Long getId() {
 		return id;
