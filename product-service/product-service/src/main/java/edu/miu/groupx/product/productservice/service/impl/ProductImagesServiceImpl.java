@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import edu.miu.groupx.product.productservice.models.Product;
 import edu.miu.groupx.product.productservice.models.ProductImages;
 import edu.miu.groupx.product.productservice.repository.ProductImagesRepository;
+import edu.miu.groupx.product.productservice.repository.ProductRepository;
 import edu.miu.groupx.product.productservice.service.ProductImagesService;
 import edu.miu.groupx.product.productservice.service.ProductService;
 import edu.miu.groupx.product.productservice.utils.S3Utils;
@@ -22,7 +23,8 @@ public class ProductImagesServiceImpl implements ProductImagesService {
 	ProductImagesRepository productImagesRepository;
 
 	@Autowired
-	ProductService productService;
+	ProductRepository productRepo;
+	
 
 	@Override
 	public List<ProductImages> getAllProductImages() {
@@ -37,20 +39,29 @@ public class ProductImagesServiceImpl implements ProductImagesService {
 	}
 
 	@Override
-	public ProductImages saveProductImage(ProductImages image) {
-		Long productId= image.getProductId();   
+	public ProductImages saveProductImage(ProductImages image, Long id) {
+		//Long productId= image.getProdId();   
 		  String fileName=Paths.get(image.getImagePth()).getFileName().toString();
-		  S3Utils.uploadObject(fileName, image.getImagePth());
+		  
+		  //for uploading to S3
+		//S3Utils.uploadObject(fileName, image.getImagePth());
+		  //for saving picture and updating image
+		  String imageUrl=S3Utils.getBucketName()+fileName;
+			 image.setImagePth(imageUrl);
+			 ProductImages productImages=productImagesRepository.save(image);
+			 //Product product= productRepo.findById(productId).get();
+			 Product product= productRepo.findById(id).get();
+			 
+			 
+			 //productImages.add(image);
+			 product.addImage(productImages);
+			 productRepo.save(product);
+		  
 		 
-		 String imageUrl=S3Utils.getBucketName()+fileName;
-		 image.setImagePth(imageUrl);
-		 Product product= productService.getProductById(productId);
-		 List<ProductImages> productImages= product.getPictures();
-		 productImages.add(image);
-		 productService.save(product);
+		 
 		 
 		
-		return productImagesRepository.save(image);
+		return productImages;
 	}
 
 	@Override

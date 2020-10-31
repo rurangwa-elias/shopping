@@ -5,6 +5,8 @@ import java.util.*;
 
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
 
 import javax.persistence.*;
@@ -31,12 +33,13 @@ public class Product implements Serializable {
 	private String imageUrl;
 
 	
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "product_id")
 	private List<ProductImages> pictures ;
 
 	private Date addedOn;
-	@ManyToMany
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JsonIgnore
 	@JoinTable
 	private Set<Category> category= new HashSet();
 	@Transient
@@ -127,6 +130,10 @@ public class Product implements Serializable {
 	
 	public void addCategory(Category category) {
 		this.category.add(category);
+	}
+	
+	public void addImage(ProductImages productImages) {
+		this.pictures.add(productImages);
 	}
 	
 

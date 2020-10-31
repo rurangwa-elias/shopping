@@ -36,7 +36,7 @@ public class ProductImagesController {
 	public ProductImages addCategory(@RequestBody ProductImages productImages, @PathVariable Long id) {
 
 		//missing implementation
-		return productImagesService.saveProductImage(productImages);
+		return productImagesService.saveProductImage(productImages,id);
 	}
 
 	@GetMapping("ProductImages/{id}")

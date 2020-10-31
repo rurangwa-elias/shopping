@@ -22,7 +22,8 @@ public class Category implements Serializable {
 	private String name;
 	
 
-	@ManyToMany(mappedBy = "category")
+	@ManyToMany(mappedBy = "category", cascade = CascadeType.ALL)
+	
 	private Set<Product> products;
 
 	public Long getId() {

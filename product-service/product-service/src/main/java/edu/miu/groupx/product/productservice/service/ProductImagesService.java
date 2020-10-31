@@ -9,7 +9,7 @@ import edu.miu.groupx.product.productservice.models.Category;
 public interface ProductImagesService {
 	List<ProductImages> getAllProductImages();
 	ProductImages getProductImagesById(long id);
-	ProductImages saveProductImage(ProductImages image);
+	ProductImages saveProductImage(ProductImages image,Long id);
 	List<ProductImages> saveProductImages(List<ProductImages> imagesList, Long id);
    
 

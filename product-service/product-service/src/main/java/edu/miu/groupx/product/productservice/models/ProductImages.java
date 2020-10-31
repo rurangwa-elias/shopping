@@ -25,8 +25,9 @@ public class ProductImages implements Serializable{
 	 @NotNull
 	 private String imagePth;
 	 
-	 @Transient
-	 private Long productId;
+	/*
+	 * @Transient private Long prodId;
+	 */
 		
 	public ProductImages() {
 		
@@ -48,13 +49,12 @@ public class ProductImages implements Serializable{
 		this.imagePth = imagePth;
 	}
 
-	public Long getProductId() {
-		return productId;
-	}
-
-	public void setProductId(Long productId) {
-		this.productId = productId;
-	}
+	/*
+	 * public Long getProdId() { return prodId; }
+	 * 
+	 * public void setProdId(Long prodId) { this.prodId = prodId; }
+	 */
+	
 
 	
 	

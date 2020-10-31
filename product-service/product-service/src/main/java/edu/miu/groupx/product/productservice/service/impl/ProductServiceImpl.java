@@ -107,7 +107,9 @@ public class ProductServiceImpl implements ProductService {
 
 		Product ActualProduct = getProductById(id);
 		ActualProduct.setName(newProduct.getName());
+		System.out.println("Before change: "+ActualProduct.getPrice());
 		ActualProduct.setPrice(newProduct.getPrice());
+		System.out.println("after change: "+ActualProduct.getPrice());
 		ActualProduct.setCategory(newProduct.getCategory());
 		ActualProduct.setAddedOn(newProduct.getAddedOn());
 		// ActualProduct.setStatus(newProduct.getStatus());
