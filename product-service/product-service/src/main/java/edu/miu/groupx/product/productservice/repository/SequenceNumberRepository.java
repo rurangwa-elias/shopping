@@ -1,9 +1,10 @@
-package edu.miu.groupx.shop.shopping.repository;
+package edu.miu.groupx.product.productservice.repository;
 
 
-import edu.miu.groupx.shop.shopping.models.ESequenceType;
-import edu.miu.groupx.shop.shopping.models.IRepositoryConstant;
-import edu.miu.groupx.shop.shopping.models.SequenceNumber;
+
+import edu.miu.groupx.product.productservice.models.ESequenceType;
+import edu.miu.groupx.product.productservice.models.IRepositoryConstant;
+import edu.miu.groupx.product.productservice.models.SequenceNumber;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;

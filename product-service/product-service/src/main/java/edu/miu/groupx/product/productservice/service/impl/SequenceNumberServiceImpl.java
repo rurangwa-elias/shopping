@@ -1,8 +1,9 @@
-package edu.miu.groupx.shop.shopping.service.impl;
-import edu.miu.groupx.shop.shopping.models.ESequenceType;
-import edu.miu.groupx.shop.shopping.models.SequenceNumber;
-import edu.miu.groupx.shop.shopping.repository.SequenceNumberRepository;
-import edu.miu.groupx.shop.shopping.service.SequenceNumberService;
+package edu.miu.groupx.product.productservice.service.impl;
+
+import edu.miu.groupx.product.productservice.models.ESequenceType;
+import edu.miu.groupx.product.productservice.models.SequenceNumber;
+import edu.miu.groupx.product.productservice.repository.SequenceNumberRepository;
+import edu.miu.groupx.product.productservice.service.SequenceNumberService;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -46,15 +47,5 @@ public class SequenceNumberServiceImpl implements SequenceNumberService {
         return  prefix+getNextSequence(ESequenceType.PRODUCT)+getCurrentYear();
     }
 
-    @Override
-    public String getNextPaymentNumber() {
 
-        //P+SEQUENCE+YEAR
-
-        String  prefix="P";
-
-        //OR+SEQUENCE+YEAR
-
-        return  prefix+getNextSequence(ESequenceType.PAYMENT)+getCurrentYear();
-    }
 }

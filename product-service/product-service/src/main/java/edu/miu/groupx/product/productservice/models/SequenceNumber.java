@@ -1,7 +1,8 @@
-package edu.miu.groupx.shop.shopping.models;
+package edu.miu.groupx.product.productservice.models;
 
 
-import edu.miu.groupx.shop.shopping.repository.SequenceNumberRepository;
+import edu.miu.groupx.product.productservice.repository.ProductRepository;
+import edu.miu.groupx.product.productservice.repository.SequenceNumberRepository;
 
 import javax.persistence.*;
 import java.io.Serializable;

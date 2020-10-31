@@ -1,6 +1,7 @@
 package edu.miu.groupx.product.productservice.models;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -13,7 +14,6 @@ import com.sun.istack.NotNull;
 import javax.persistence.*;
 
 import lombok.Data;
-@Component
 @Entity
 @Data
 public class Product implements Serializable{
@@ -28,10 +28,10 @@ public class Product implements Serializable{
 	@NotNull
 	private String description;
 	@NotNull
-	private double Price;
+	private BigDecimal Price=BigDecimal.ZERO;
 	@NotNull
 	private String imageUrl;
-	
+	private String productNumber;
 	private Date addedOn;
 	@ManyToOne
 	private ProductCatagory productCatagory;
@@ -81,10 +81,10 @@ public class Product implements Serializable{
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public double getPrice() {
+	public BigDecimal getPrice() {
 		return Price;
 	}
-	public void setPrice(double price) {
+	public void setPrice(BigDecimal price) {
 		Price = price;
 	}
 	public String getImageUrl() {

@@ -2,6 +2,7 @@ package edu.miu.groupx.product.productservice.service.impl;
 
 import java.util.List;
 
+import edu.miu.groupx.product.productservice.service.SequenceNumberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,8 @@ public class ProductServiceImpl implements ProductService {
 	    ProductRepository productRepository;
 	 @Autowired
 	 ProductCatagoryRepository productCatagoryRepository;
+	@Autowired
+	private SequenceNumberService sequenceNumberService;
 
 	@Override
 	public Product save(Product product) {
@@ -28,6 +31,8 @@ public class ProductServiceImpl implements ProductService {
 			if(productCategoryId!=null) {
 			ProductCatagory productCatagory=productCatagoryRepository.findById(productCategoryId).get();
 			//how to set the quantity
+				String productSequence=sequenceNumberService.getNextProductNumber();
+				product.setProductNumber(productSequence);
 			product.setProductCatagory(productCatagory);
 			System.out.println(product.getProductCatagory().getId());
 			actualProduct=productRepository.save(product);
