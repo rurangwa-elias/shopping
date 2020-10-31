@@ -44,4 +44,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 	@Query("SELECT p from  Product p where p.name like '%'||:keyword||'%' or p.Price like cast(:keyword as double) or addedOn like '%'||:keyword||'%'")
 	List<Product> searchProducts(@Param(value = "keyword") String keyword);
 
+//	SELECT p.id, p.price, p.name, w.quantity as stockAmount from Product p join product_warehouse w on p.warehouse_id=w.id where p.user_id=1 order by p.id
+	@Query("SELECT p from Product p where p.user.id= :id order by p.id")
+	List<Product> findRProductsByVendorId(@Param("id") Long id);
 }
